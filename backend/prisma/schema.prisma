@@ -14,6 +14,8 @@ model Trip {
   ends_at      DateTime
   is_confirmed Boolean       @default(false)
   created_at   DateTime      @default(now())
+  activities   Activity[]
+  links        Link[]
   participants Participant[]
 
   @@map("trips")
@@ -29,4 +31,24 @@ model Participant {
   trip         Trip    @relation(fields: [tripId], references: [id])
 
   @@map("participants")
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  title     String
+  occurs_at DateTime
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id])
+
+  @@map("activities")
+}
+
+model Link {
+  id     String @id @default(uuid())
+  title  String
+  url    String
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id])
+
+  @@map("links")
 }
