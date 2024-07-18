@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { dayjs } from '../lib/dayjs';
 import { getMailClient } from "../lib/mail";
 import { prisma } from "../lib/prisma";
+import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 export async function confirmTrip(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get("/trips/:tripId/confirm", { 
@@ -31,7 +33,7 @@ export async function confirmTrip(app: FastifyInstance) {
         })
 
         if(!trip) {
-            throw new Error('Trip not found!')
+            throw new ClientError('Trip not found!')
         }
         // se confirmado para viagem, redirecionar para outro lugar no front
         if(trip.is_confirmed) {
@@ -78,6 +80,6 @@ export async function confirmTrip(app: FastifyInstance) {
             })
         )
 
-        return reply.redirect(`http://localhost:3000/trips/${tripId}`)
+        return reply.redirect(`${env.WEB_BASE_URL}/trips/${tripId}`)
     })
 }
